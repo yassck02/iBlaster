@@ -8,11 +8,12 @@
 
 import UIKit
 
+/* ----------------------------------------------------------------------------------------- */
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -40,7 +41,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
+    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+    //MARK: - 3D Touch Shortcuts
+    
+    enum ShortcutType: String {
+        case secretSettings = "secretSettings"
+    }
+    
+    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+        completionHandler(handleShortcutItem(withShortcutItem: shortcutItem))
+    }
+    
+    func handleShortcutItem(withShortcutItem item: UIApplicationShortcutItem) -> Bool {
+        guard let shortcutType = item.type.components(separatedBy: ".").last else { return false }
+        
+        if let type = ShortcutType(rawValue: shortcutType) {
+            switch type {
+            case .secretSettings:
+                Log.info("Secret Settings event handled")
+                return true
+            }
+        }
+        return false
+    }
+    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 }
+
+/* ----------------------------------------------------------------------------------------- */
 

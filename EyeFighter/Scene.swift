@@ -9,32 +9,59 @@
 import SpriteKit
 import ARKit
 
+// -----------------------------------------------------------
+
 class Scene: SKScene {
     
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    
+    var ship: SKSpriteNode!
+    
+    var enemies = [SKSpriteNode]()
+    
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    
     override func didMove(to view: SKView) {
-        // Setup your scene here
-    }
-    
-    override func update(_ currentTime: TimeInterval) {
-        // Called before each frame is rendered
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let sceneView = self.view as? ARSKView else {
-            return
-        }
         
-        // Create anchor using the camera's current position
-        if let currentFrame = sceneView.session.currentFrame {
-            
-            // Create a transform with a translation of 0.2 meters in front of the camera
-            var translation = matrix_identity_float4x4
-            translation.columns.3.z = -0.2
-            let transform = simd_mul(currentFrame.camera.transform, translation)
-            
-            // Add a new anchor to the session
-            let anchor = ARAnchor(transform: transform)
-            sceneView.session.add(anchor: anchor)
+        // Add the ship to the scene
+        ship = SKSpriteNode(color: .white, size: CGSize(width: 50.0, height: 50.0))
+        ship.position.y = -self.frame.height/2 + 50
+        self.addChild(ship)
+        
+        spawnEnemy()
+        
+        self.backgroundColor = UIColor(hue: AppUtility.hue, saturation: 0.75, brightness: 0.75, alpha: 1.0)
+    }
+    
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    func spawnEnemy() {
+        let enemy = SKSpriteNode(color: .black, size: CGSize(width: 25.0, height: 25.0))
+        enemy.position = CGPoint.zero
+        enemies.append(enemy)
+        self.addChild(enemy)
+        enemy.run(SKAction.repeatForever(SKAction.sequence([
+                SKAction.scale(to: CGSize(width: 25, height: 25), duration: 0.5),
+                SKAction.scale(to: CGSize(width: 20, height: 20), duration: 0.5)
+        ])))
+    }
+    
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let touch = touches.first {
+            ship.position.x = touch.location(in: self).x
         }
     }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let touch = touches.first {
+            ship.position.x = touch.location(in: self).x
+        }
+    }
+    
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    
 }
+
+// -----------------------------------------------------------
