@@ -7,20 +7,19 @@
 //
 
 import SpriteKit
-import ARKit
+import GameplayKit
 
-// -----------------------------------------------------------
+/* ----------------------------------------------------------------------------------------- */
 
-class Scene: SKScene {
+class GameScene: SKScene, GameMenuDelegate {
     
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
     var ship: SKSpriteNode!
-    
     var enemies = [SKSpriteNode]()
     
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
     override func didMove(to view: SKView) {
         
         // Add the ship to the scene
@@ -28,12 +27,12 @@ class Scene: SKScene {
         ship.position.y = -self.frame.height/2 + 50
         self.addChild(ship)
         
-        spawnEnemy()
-        
+        // Setup the environment
         self.backgroundColor = UIColor(hue: AppUtility.hue, saturation: 0.75, brightness: 0.75, alpha: 1.0)
+    
     }
     
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
     func spawnEnemy() {
         let enemy = SKSpriteNode(color: .black, size: CGSize(width: 25.0, height: 25.0))
@@ -46,7 +45,7 @@ class Scene: SKScene {
         ])))
     }
     
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
@@ -60,8 +59,27 @@ class Scene: SKScene {
         }
     }
     
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+    // MARK: - Menu Buttons
     
+    func onPressed(button: SKNode, ID: String) {
+        switch(ID) {
+        case "play":
+            break
+        case "pause":
+            break
+        case "quit":
+            break
+        case "restart":
+            break
+        default:
+            break
+        }
+    }
+    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+
 }
 
-// -----------------------------------------------------------
+/* ----------------------------------------------------------------------------------------- */

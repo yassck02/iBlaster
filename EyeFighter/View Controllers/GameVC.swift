@@ -10,16 +10,18 @@ import UIKit
 import SpriteKit
 import ARKit
 
-// -----------------------------------------------------------
+/* ----------------------------------------------------------------------------------------- */
 
 class GameVC: UIViewController, ARSKViewDelegate {
     
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
     @IBOutlet var sceneView: ARSKView!
     
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    var manager = GameManager()
     
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -27,15 +29,13 @@ class GameVC: UIViewController, ARSKViewDelegate {
         sceneView.showsFPS = true
         sceneView.showsNodeCount = true
         
-        if let scene = SKScene(fileNamed: "Scene") {
-            sceneView.presentScene(scene)
-        }
+        sceneView.presentScene(manager.scene)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-//        let configuration = ARFaceTrackingConfiguration()
-//        sceneView.session.run(configuration)
+        //let configuration = ARFaceTrackingConfiguration()
+        //sceneView.session.run(configuration)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -43,7 +43,7 @@ class GameVC: UIViewController, ARSKViewDelegate {
         sceneView.session.pause()
     }
     
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     // MARK: - ARSKViewDelegate
     
     func session(_ session: ARSession, didFailWithError error: Error) {
@@ -59,8 +59,8 @@ class GameVC: UIViewController, ARSKViewDelegate {
         // Reset tracking and/or remove existing anchors if consistent tracking is required
     }
     
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 }
 
-// -----------------------------------------------------------
+/* ----------------------------------------------------------------------------------------- */

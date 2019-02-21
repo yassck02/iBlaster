@@ -1,18 +1,28 @@
 //
-//  HelpVC.swift
+//  GameManager.swift
 //  EyeFighter
 //
-//  Created by Connor yass on 2/20/19.
+//  Created by Connor yass on 2/21/19.
 //  Copyright © 2019 HSY Technologies. All rights reserved.
 //
 
-import UIKit
+import GameplayKit
 
 /* ----------------------------------------------------------------------------------------- */
 
-class HelpVC: UIViewController {
+class GameManager {
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+    
+    var scene: GameScene!
+    var state: GameState!
+    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+    
+    init() {
+        scene = GameScene(fileNamed: "GameScene")
+        state = GameState()
+    }
     
 }
 
