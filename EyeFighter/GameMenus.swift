@@ -9,7 +9,7 @@
 import SpriteKit
 
 protocol GameMenuDelegate {
-    func onPressed(button: SKNode, ID: String)
+    func onPressed(Button: SKNode, ID: String)
 }
 
 /* ----------------------------------------------------------------------------------------- */
@@ -53,24 +53,15 @@ class GameButton: SKSpriteNode {
         super.init(texture: defaultTexture, color: UIColor.white, size: defaultTexture.size())
         isUserInteractionEnabled = true
         
-        //Creating and adding a blank label, centered on the button
         self.label.verticalAlignmentMode = SKLabelVerticalAlignmentMode.center;
         self.label.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.center;
         addChild(self.label)
-        
-        // Adding this node as an empty layer. Without it the touch functions are not being called
-        // The reason for this is unknown when this was implemented...?
-        let bugFixLayerNode = SKSpriteNode(texture: nil, color: UIColor.clear, size: defaultTexture.size())
-        bugFixLayerNode.position = self.position
-        addChild(bugFixLayerNode)
-        
     }
     
     /**
-     * Taking a target object and adding an action that is triggered by a button event.
+     * Taking a target object and adding an action that is triggered by a Button event.
      */
-    func setButtonAction(target: AnyObject, triggerEvent event: GameButtonActionType, action:Selector) {
-        
+    func setAction(target: AnyObject, triggerEvent event: GameButtonActionType, action:Selector) {
         switch (event) {
         case .TouchUpInside:
             targetTouchUpInside = target
@@ -82,13 +73,11 @@ class GameButton: SKSpriteNode {
             targetTouchUp = target
             actionTouchUp = action
         }
-        
     }
     
-    func setButtonLabel(title: NSString, font: String, fontSize: CGFloat) {
+    func setLabel(title: NSString, fontSize: CGFloat) {
         self.label.text = title as String
         self.label.fontSize = fontSize
-        self.label.fontName = font
     }
     
     var actionTouchUpInside: Selector?
@@ -144,38 +133,33 @@ class GameButton: SKSpriteNode {
 class GameMenu: SKNode {
     var delegegate: GameMenuDelegate?
     
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if let touch = touches.first?.location(in: self) {
-            for child in children {
-                if child.contains(touch) {
-                    didTouch(child)
-                    break
-                }
-            }
-        }
+    override init() {
+        super.init()
+        zPosition = 1
     }
     
-    func didTouch(_ node: SKNode) { }
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 /* ----------------------------------------------------------------------------------------- */
 
 class StartMenu: GameMenu {
     
-    var btn_play: GameButton!
-    var btn_settings: GameButton!
+    var btn_play:     GameButton!
     
-    override func didTouch(_ node: SKNode) {
-        switch node {
-        case btn_play:
-            Log.verbose("Play button pressed")
-            delegegate?.onPressed(button: node, ID: "play")
-        case btn_settings:
-            Log.verbose("Settings button pressed")
-            delegegate?.onPressed(button: node, ID: "settings")
-        default:
-            Log.error("Unrecognized button pressed")
-        }
+    override init() { super.init(); combinedInit() }
+    required init?(coder aDecoder: NSCoder) { super.init(); combinedInit() }
+    
+    func combinedInit() {
+        Log.verbose("")
+        btn_play = GameButton(normalTexture: SKTexture.init(imageNamed: "Button"),
+                              selectedTexture: SKTexture.init(imageNamed: "Button"),
+                              disabledTexture: nil)
+        btn_play.setLabel(title: "Play", fontSize: 20.0)
+        btn_play.position = CGPoint(x: self.frame.midX, y: self.frame.midY)
+        self.addChild(btn_play)
     }
 }
 
@@ -183,30 +167,32 @@ class StartMenu: GameMenu {
 
 class PauseMenu: GameMenu {
     
+    var btn_resume: GameButton!
     var btn_quit: GameButton!
-    var btn_play: GameButton!
-    var btn_restart: GameButton!
     
-    override func didTouch(_ node: SKNode) {
-        switch node {
-        case btn_quit:
-            Log.verbose("Quit button pressed")
-            delegegate?.onPressed(button: node, ID: "quit")
-        case btn_play:
-            Log.verbose("Play button pressed")
-            delegegate?.onPressed(button: node, ID: "play")
-        case btn_restart:
-            Log.verbose("Restart button pressed")
-            delegegate?.onPressed(button: node, ID: "restart")
-        default:
-            Log.error("Unrecognized button pressed")
-        }
+    override init() { super.init(); combinedInit() }
+    required init?(coder aDecoder: NSCoder) { super.init(); combinedInit() }
+    
+    func combinedInit() {
+        btn_resume = GameButton(normalTexture: SKTexture.init(imageNamed: "Button"),
+                              selectedTexture: SKTexture.init(imageNamed: "Button"),
+                              disabledTexture: nil)
+        btn_resume.setLabel(title: "Resume", fontSize: 12.0)
+        btn_resume.position = CGPoint(x: 0, y: 50)
+        self.addChild(btn_resume)
+        
+        btn_quit = GameButton(normalTexture: SKTexture.init(imageNamed: "Button"),
+                                selectedTexture: SKTexture.init(imageNamed: "Button"),
+                                disabledTexture: nil)
+        btn_quit.setLabel(title: "Quit", fontSize: 12.0)
+        btn_quit.position = CGPoint(x: 0, y: -50)
+        self.addChild(btn_quit)
     }
 }
 
 /* ----------------------------------------------------------------------------------------- */
 
-class PlayingMenu: GameMenu {
+class PlayMenu: GameMenu {
     
     var btn_pause: GameButton!
     
@@ -214,16 +200,12 @@ class PlayingMenu: GameMenu {
     required init?(coder aDecoder: NSCoder) { super.init(); combinedInit() }
     
     func combinedInit() {
-    }
-    
-    override func didTouch(_ node: SKNode) {
-        switch node {
-        case btn_pause:
-            Log.verbose("Pause button pressed")
-            delegegate?.onPressed(button: node, ID: "pause")
-        default:
-            Log.error("Unrecognized button pressed")
-        }
+        btn_pause = GameButton(normalTexture: SKTexture.init(imageNamed: "Button"),
+                              selectedTexture: SKTexture.init(imageNamed: "Button"),
+                              disabledTexture: nil)
+        btn_pause.setLabel(title: "Pause", fontSize: 12.0)
+        btn_pause.position = CGPoint(x: 100, y: 100)
+        self.addChild(btn_pause)
     }
 }
 
@@ -231,20 +213,26 @@ class PlayingMenu: GameMenu {
 
 class EndedMenu: GameMenu {
     
-    var btn_retry: GameButton!
     var btn_quit: GameButton!
+    var btn_retry: GameButton!
     
-    override func didTouch(_ node: SKNode) {
-        switch node {
-        case btn_retry:
-            Log.verbose("Retry button pressed")
-            delegegate?.onPressed(button: node, ID: "retry")
-        case btn_quit:
-            Log.verbose("Quit button pressed")
-            delegegate?.onPressed(button: node, ID: "quit")
-        default:
-            Log.error("Unrecognized button pressed")
-        }
+    override init() { super.init(); combinedInit() }
+    required init?(coder aDecoder: NSCoder) { super.init(); combinedInit() }
+    
+    func combinedInit() {
+        btn_quit = GameButton(normalTexture: SKTexture.init(imageNamed: "Button"),
+                              selectedTexture: SKTexture.init(imageNamed: "Button"),
+                              disabledTexture: nil)
+        btn_quit.setLabel(title: "Quit", fontSize: 12.0)
+        btn_quit.position = CGPoint(x: 0, y: 50)
+        self.addChild(btn_quit)
+        
+        btn_retry = GameButton(normalTexture: SKTexture.init(imageNamed: "Button"),
+                              selectedTexture: SKTexture.init(imageNamed: "Button"),
+                              disabledTexture: nil)
+        btn_retry.setLabel(title: "Retry", fontSize: 12.0)
+        btn_retry.position = CGPoint(x: 0, y: -50)
+        self.addChild(btn_retry)
     }
 }
 

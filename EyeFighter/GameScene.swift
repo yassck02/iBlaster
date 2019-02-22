@@ -11,7 +11,7 @@ import GameplayKit
 
 /* ----------------------------------------------------------------------------------------- */
 
-class GameScene: SKScene, GameMenuDelegate {
+class GameScene: SKScene {
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -28,8 +28,6 @@ class GameScene: SKScene, GameMenuDelegate {
         self.addChild(ship)
         
         // Setup the environment
-        self.backgroundColor = UIColor(hue: AppUtility.hue, saturation: 0.75, brightness: 0.75, alpha: 1.0)
-    
     }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -56,24 +54,6 @@ class GameScene: SKScene, GameMenuDelegate {
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         if let touch = touches.first {
             ship.position.x = touch.location(in: self).x
-        }
-    }
-    
-    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    // MARK: - Menu Buttons
-    
-    func onPressed(button: SKNode, ID: String) {
-        switch(ID) {
-        case "play":
-            break
-        case "pause":
-            break
-        case "quit":
-            break
-        case "restart":
-            break
-        default:
-            break
         }
     }
     
