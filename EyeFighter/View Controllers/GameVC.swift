@@ -18,8 +18,6 @@ class GameVC: UIViewController, ARSKViewDelegate {
 
     @IBOutlet var sceneView: ARSKView!
     
-    var manager = GameManager()
-    
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
     override func viewDidLoad() {
@@ -28,8 +26,9 @@ class GameVC: UIViewController, ARSKViewDelegate {
         sceneView.delegate = self
         sceneView.showsFPS = true
         sceneView.showsNodeCount = true
+        sceneView.presentScene(GameManager.shared.scene)
         
-        sceneView.presentScene(manager.scene)
+        GameManager.shared.start()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,11 +66,11 @@ class GameVC: UIViewController, ARSKViewDelegate {
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
     override var prefersStatusBarHidden: Bool {
-        return type(of: manager.stateMachine.currentState) == PlayingState.self
+        return type(of: GameManager.shared.stateMachine.currentState) == PlayingState.self
     }
     
     override var prefersHomeIndicatorAutoHidden: Bool {
-        return type(of: manager.stateMachine.currentState) == PlayingState.self
+        return type(of: GameManager.shared.stateMachine.currentState) == PlayingState.self
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {

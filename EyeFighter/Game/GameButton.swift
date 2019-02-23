@@ -21,6 +21,7 @@ class GameButton: SKSpriteNode {
             color = isEnabled ? color.withAlphaComponent(0.5) : color.withAlphaComponent(1.0)
         }
     }
+    
     var isSelected: Bool = false {
         didSet {
             color = isSelected ? color.withAlphaComponent(0.85) : color.withAlphaComponent(1.0)
@@ -31,9 +32,7 @@ class GameButton: SKSpriteNode {
     
     required init(coder: NSCoder) {
         fatalError("NSCoding not supported")
-    }
-    
-    
+    }    
     
     init(texture: SKTexture?, color: UIColor, size: CGSize, text: String?) {
         super.init(texture: texture, color: color, size: size)
