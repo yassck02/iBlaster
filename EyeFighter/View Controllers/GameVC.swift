@@ -34,8 +34,13 @@ class GameVC: UIViewController, ARSKViewDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //let configuration = ARFaceTrackingConfiguration()
-        //sceneView.session.run(configuration)
+        
+        if ARFaceTrackingConfiguration.isSupported {
+            let configuration = ARFaceTrackingConfiguration()
+            sceneView.session.run(configuration)
+        } else {
+            Log.error("Face tracking not supported :(")
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -60,6 +65,21 @@ class GameVC: UIViewController, ARSKViewDelegate {
     }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+    
+    override var prefersStatusBarHidden: Bool {
+        return type(of: manager.stateMachine.currentState) == PlayingState.self
+    }
+    
+    override var prefersHomeIndicatorAutoHidden: Bool {
+        return type(of: manager.stateMachine.currentState) == PlayingState.self
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
 
 }
 
