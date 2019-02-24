@@ -13,12 +13,7 @@ import GameKit
 class Ship: GKEntity {
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    
-    static var action_fire: SKAction {
-        return SKAction.sequence([
-            SKAction.moveTo(x: 0.0, duration: 0.1)
-        ])
-    }
+
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     

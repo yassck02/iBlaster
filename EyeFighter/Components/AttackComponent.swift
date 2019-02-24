@@ -12,6 +12,17 @@ import GameplayKit
 
 class AttackComponent: GKComponent {
     
+    var weapon: Weapon!
+    
+    init(weapon: Weapon) {
+        super.init()
+        self.weapon = weapon
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
 }
 
 /* ----------------------------------------------------------------------------------------- */

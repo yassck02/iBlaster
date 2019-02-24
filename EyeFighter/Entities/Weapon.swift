@@ -15,10 +15,10 @@ class Weapon: GKEntity {
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
     func launch() {
-        
+
     }
     
-    static var action_launch: SKAction {
+    static var action_fire: SKAction {
         return SKAction.sequence([
             SKAction.moveTo(x: 0.0, duration: 0.1)
         ])
