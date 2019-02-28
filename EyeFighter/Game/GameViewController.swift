@@ -12,11 +12,12 @@ import ARKit
 
 /* ----------------------------------------------------------------------------------------- */
 
-class GameVC: UIViewController, ARSKViewDelegate {
+class GameViewController: UIViewController, ARSKViewDelegate {
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
     @IBOutlet var sceneView: ARSKView!
+    var manager: GameManager!
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
@@ -64,17 +65,34 @@ class GameVC: UIViewController, ARSKViewDelegate {
     @IBOutlet weak var lbl_distance: UILabel!
     @IBOutlet weak var view_lookPos: UIView!
     
+    @IBOutlet weak var view_devTools: UIView!
+    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+    var showDevTools: Bool! {
+        didSet {
+            if (showDevTools == true) {
+                view_devTools.isHidden = false
+                sceneView.showsFPS = true
+                sceneView.showsNodeCount = true
+            } else {
+                view_devTools.isHidden = false
+                sceneView.showsFPS = false
+                sceneView.showsNodeCount = false
+            }
+        }
+    }
+    
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         sceneView.delegate = self
-        sceneView.showsFPS = true
-        sceneView.showsNodeCount = true
-        sceneView.presentScene(GameManager.shared.scene)
-        
-        GameManager.shared.start()
+        manager = GameManager(scene: GameScene())
+        sceneView.presentScene(manager.scene)
+        manager.state = .starting
+        showDevTools = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -163,9 +181,6 @@ class GameVC: UIViewController, ARSKViewDelegate {
             let smoothEyeLookAtPositionX = self.xLookPositions.average!
             let smoothEyeLookAtPositionY = self.yLookPositions.average!
             
-            // update indicator position
-            self.view_lookPos.transform = CGAffineTransform(translationX: smoothEyeLookAtPositionX, y: smoothEyeLookAtPositionY)
-            
             // Calculate distance of the eyes to the camera
             let distanceL = self.leftEyeNode.worldPosition - SCNVector3Zero
             let distanceR = self.rightEyeNode.worldPosition - SCNVector3Zero
@@ -173,7 +188,8 @@ class GameVC: UIViewController, ARSKViewDelegate {
             // Average distance from two eyes
             let distance = (distanceL.length() + distanceR.length()) / 2
             
-            // Update distance label value
+            // update indicator position
+            self.view_lookPos.transform = CGAffineTransform(translationX: smoothEyeLookAtPositionX, y: smoothEyeLookAtPositionY)
             self.lbl_distance.text = "\(Int(round(distance * 100))) cm"
         }
     }
@@ -185,15 +201,11 @@ class GameVC: UIViewController, ARSKViewDelegate {
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
     override var prefersStatusBarHidden: Bool {
-        return type(of: GameManager.shared.stateMachine.currentState) == PlayingState.self
+        return true
     }
     
     override var prefersHomeIndicatorAutoHidden: Bool {
-        return type(of: GameManager.shared.stateMachine.currentState) == PlayingState.self
-    }
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
+        return true
     }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

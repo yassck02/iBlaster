@@ -7,6 +7,7 @@
 //
 
 import SceneKit
+import SpriteKit
 
 extension SCNVector3 {
     func length() -> Float {
@@ -30,5 +31,21 @@ extension Collection where Element == CGFloat, Index == Int {
         }
         
         return sum / CGFloat(count)
+    }
+}
+
+extension SKSpriteNode {
+    
+    public func tile(image: UIImage, size: CGSize) {
+        let textureSize = CGRect(origin: .zero, size: image.size)
+        UIGraphicsBeginImageContext(size)
+        if let context = UIGraphicsGetCurrentContext() {
+            context.draw(image.cgImage!, in: textureSize, byTiling: true)
+            if let tiledBackground = UIGraphicsGetImageFromCurrentImageContext() {
+                self.texture = SKTexture(image: tiledBackground)
+                self.size = size
+            }
+            UIGraphicsEndImageContext()
+        }
     }
 }

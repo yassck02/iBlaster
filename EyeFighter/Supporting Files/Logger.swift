@@ -23,11 +23,19 @@ class Log {
     }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+    class func function(filename: String = #file,
+                        funcname: String = #function) {
+        if enabled {
+            print("[EF][\(sourceFileName(filePath: filename))]: \(funcname)")
+        }
+    }
+    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
     class func error( _ object: Any,
                       filename: String = #file,
                       funcname: String = #function) {
-        
         if enabled {
             print("[EF] *ERROR* [\(sourceFileName(filePath: filename))]: \(funcname) - \(object)")
         }
@@ -38,25 +46,13 @@ class Log {
     class func info( _ object: Any,
                      filename: String = #file,
                      funcname: String = #function) {
-        
         if enabled {
             print("[EF][\(sourceFileName(filePath: filename))]: \(funcname) - \(object)")
         }
     }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    
-    class func verbose( _ object: Any,
-                        filename: String = #file,
-                        funcname: String = #function) {
-        
-        if enabled {
-            print("[EF][\(sourceFileName(filePath: filename))]: \(funcname) - \(object)")
-        }
-    }
-    
-    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    
+
 }
 
 /* ----------------------------------------------------------------------------------------- */
