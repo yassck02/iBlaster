@@ -20,49 +20,63 @@ enum GameState {
 }
 
 /* ----------------------------------------------------------------------------------------- */
+// - Keeps track of game state, and score
+// - Constructs and presents menuse based on game state
+// 
 
 class GameManager {
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
+    // MARK: - Variables
+    
     var scene: GameScene!
     
-    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+    var timer: StopWatch!
     
-    var score: Int = 0 {
+    var score: CGFloat = 0 {
         didSet {
-            lbl_score.text = "\(score)"
+            lbl_score.text = "\(Int(score))"
         }
     }
-    
-    var difficulty: Float = 0.0
-    
-    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
     var state: GameState! {
         didSet {
             switch(state!) {
             case .starting:
-                Log.function()
                 showStartMenu()
+                hidePauseMenu()
+                hideEndMenu()
+                hidePlayMenu()
+                scene.isPaused = true
                 break
             case .playing:
+                showPlayMenu()
+                hideStartMenu()
+                hidePauseMenu()
+                hideEndMenu()
+                scene.isPaused = false
                 break
             case .paused:
                 showPauseMenu()
+                scene.isPaused = true
                 break
             case .ended:
                 showEndMenu()
+                scene.isPaused = true
                 break
             }
         }
     }
 
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
+    // MARK: = Init
+    
     init(scene: GameScene) {
         Log.function()
+        
         self.scene = scene
+        scene.manager = self
+        
         createPlayMenu()
         createStartMenu()
         createPauseMenu()
@@ -73,68 +87,87 @@ class GameManager {
 
     @objc func play() {
         Log.function()
-        hideStartMenu()
-        showPlayMenu()
+        initGame()
+        state = .playing
     }
     
     @objc func pause() {
         Log.function()
-        showPauseMenu()
+        state = .paused
     }
     
     @objc func quit() {
         Log.function()
-        hidePauseMenu()
-        hideEndMenu()
-        hidePlayMenu()
-        showStartMenu()
+        scene.cleanUp()
+        state = .starting
     }
     
     @objc func end() {
         Log.function()
-        showEndMenu()
+        state = .ended
     }
     
     @objc func restart() {
         Log.function()
+        deinitGame()
+        initGame()
+        state = .playing
     }
     
     @objc func resume() {
         Log.function()
         hidePauseMenu()
+        state = .playing
     }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
+    // MARK: = init, deinit Game
+    
+    var startTime: CFAbsoluteTime!
+    var elapsedTime: CGFloat {
+        return CGFloat(startTime! - CFAbsoluteTimeGetCurrent())
+    }
+    
     func initGame() {
-        
+        startTime = CFAbsoluteTimeGetCurrent()
+        scene.spawnEnemy()
     }
     
     func deinitGame() {
         scene.cleanUp()
         score = 0
-        difficulty = 0
+    }
+        
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+    // MARK: - Menu create, hide, show
+    
+    private func initMenu() -> SKNode {
+        let menu = SKSpriteNode(texture: nil, color: .clear, size: scene.size)
+        menu.zPosition = CGFloat(zOrder.menu)
+        self.scene.addChild(menu)
+        return menu
     }
     
-    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+    // - - - - - -
     
     private var lbl_score: SKLabelNode!
     private var playMenu: SKNode!
     
     private func createPlayMenu() {
         Log.function()
-        playMenu = SKSpriteNode(texture: nil, color: .clear, size: scene.size)
-        playMenu.zPosition = 100
-        scene.addChild(playMenu)
+        playMenu = initMenu()
         
-        let btn_pause = GameButton(texture: nil, color: .purple, size: CGSize(width: 125, height: 50), text: "PAUSE")
+        let btn_pause = GameButton(texture: nil, color: .purple, size: CGSize(width: 150, height: 50), text: "PAUSE")
         btn_pause.position = CGPoint(x: scene.size.width/2 - btn_pause.size.width/2 - 10,
                                      y: scene.size.height/2 - btn_pause.size.height/2 - 10)
         btn_pause.setAction(target: self, triggerEvent: .TouchUpInside, action: #selector(pause))
         playMenu.addChild(btn_pause)
         
         lbl_score = SKLabelNode(text: "0")
-        lbl_score.position = CGPoint(x: -100, y: 100)
+        lbl_score.position = CGPoint(x: -scene.size.width/2 + 15,
+                                     y: scene.size.height/2 - 20)
+        lbl_score.horizontalAlignmentMode = .left
+        lbl_score.verticalAlignmentMode = .top
         playMenu.addChild(lbl_score)
         
         hidePlayMenu()
@@ -149,9 +182,7 @@ class GameManager {
     
     private func createStartMenu() {
         Log.function()
-        startMenu = SKSpriteNode(texture: nil, color: .clear, size: scene.size)
-        startMenu.zPosition = 100
-        scene.addChild(startMenu)
+        startMenu = initMenu()
         
         let btn_play = GameButton(texture: nil, color: .purple, size: CGSize(width: 150, height: 50), text: "PLAY")
         btn_play.position = CGPoint(x: 0, y: -100)
@@ -170,18 +201,18 @@ class GameManager {
     
     private func createPauseMenu() {
         Log.function()
-        pauseMenu = SKSpriteNode(texture: nil, color: .clear, size: scene.size)
-        pauseMenu.zPosition = 100
-        scene.addChild(pauseMenu)
+        pauseMenu = initMenu()
         
         let btn_resume = GameButton(texture: nil, color: .purple, size: CGSize(width: 150, height: 50), text: "RESUME")
         btn_resume.position = CGPoint(x: scene.size.width/2 - btn_resume.size.width/2 - 10,
                                       y: scene.size.height/2 - btn_resume.size.height/2 - 10)
         btn_resume.setAction(target: self, triggerEvent: .TouchUpInside, action: #selector(resume))
+        btn_resume.zPosition = 5
         pauseMenu.addChild(btn_resume)
         
         let btn_quit = GameButton(texture: nil, color: .purple, size: CGSize(width: 150, height: 50), text: "QUIT")
-        btn_quit.position = CGPoint(x: 0, y: -100)
+        btn_quit.position = CGPoint(x: scene.size.width/2 - btn_quit.size.width/2 - 10,
+                                    y: scene.size.height/2 - btn_quit.size.height/2 - 100)
         btn_quit.setAction(target: self, triggerEvent: .TouchUpInside, action: #selector(quit))
         pauseMenu.addChild(btn_quit)
         
@@ -197,9 +228,7 @@ class GameManager {
     
     private func createEndMenu() {
         Log.function()
-        endMenu = SKSpriteNode(texture: nil, color: .clear, size: scene.size)
-        endMenu.zPosition = 100
-        scene.addChild(endMenu)
+        endMenu = initMenu()
         
         let btn_restart = GameButton(texture: nil, color: .purple, size: CGSize(width: 150, height: 50), text: "RESTART")
         btn_restart.position = CGPoint(x: 0, y: 100)
@@ -218,7 +247,6 @@ class GameManager {
     private func hideEndMenu() { endMenu.isHidden = true;  endMenu.isPaused = true  }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
 
 }
 

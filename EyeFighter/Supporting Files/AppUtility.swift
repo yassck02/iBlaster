@@ -11,6 +11,22 @@ import UIKit
 
 /* ----------------------------------------------------------------------------------------- */
 
+struct PhysicsCategory {
+    static let enemy      : UInt32 = 0x1 << 0
+    static let ship       : UInt32 = 0x1 << 1
+    static let projectile : UInt32 = 0x1 << 2
+}
+
+/* ----------------------------------------------------------------------------------------- */
+
+struct zOrder {
+    static let enemy : CGFloat = 0.0
+    static let ship  : CGFloat = 1.0
+    static let menu  : CGFloat = 2.0
+}
+
+/* ----------------------------------------------------------------------------------------- */
+
 class AppUtility {
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -31,15 +47,15 @@ class AppUtility {
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
-    static var feedbackGenerator: UINotificationFeedbackGenerator?
+    static var feedbackGenerator: UIImpactFeedbackGenerator?
     
-    static func vibrate(_ type: UINotificationFeedbackGenerator.FeedbackType) {
+    static func vibrate() {
         DispatchQueue.main.async {
             if feedbackGenerator == nil {
-                feedbackGenerator = UINotificationFeedbackGenerator()
-                feedbackGenerator!.prepare()
+                feedbackGenerator = UIImpactFeedbackGenerator()
             }
-            feedbackGenerator!.notificationOccurred(type)
+            feedbackGenerator!.prepare()
+            feedbackGenerator!.impactOccurred()
         }
     }
     

@@ -10,58 +10,72 @@ import GameKit
 
 /* ----------------------------------------------------------------------------------------- */
 
-class Ship: GKEntity {
+class Ship: SKSpriteNode {
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-    var position: CGPoint {
-        get {
-            return component(ofType: VisualComponent.self)!.node.position
-        }
-        set {
-            component(ofType: VisualComponent.self)!.node.position = newValue
-        }
-    }
     
-    var rotation: CGFloat {
-        get {
-            return component(ofType: VisualComponent.self)!.node.zRotation
-        }
-        set {
-            component(ofType: VisualComponent.self)!.node.zRotation = newValue
-        }
-    }
+    var weapon = Weapon(type: .A)
     
-    func rotate(to point: CGPoint) {
-        rotation = atan2(position.y - point.y, position.x - point.x)
+    var health: CGFloat = 100.0 {
+        didSet {
+            Log.info("Set to: \(health)")
+            if let scene = self.scene as? GameScene {
+                if(health <= 0) {
+                    scene.manager.end()
+                } else {
+                    
+                }
+            }
+        }
     }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-    override init() {
-        super.init()
-        let visualComponent = VisualComponent(texture: SKTexture(imageNamed: "ship"), color: .white)
-        visualComponent.addGlow(radius: 25)
-        addComponent(visualComponent)
+    init() {
+        super.init(texture: SKTexture(imageNamed: "ship"), color: .white, size: CGSize(width: 65.0, height: 65.0))
+        self.colorBlendFactor = 0.5
+        self.zPosition = CGFloat(zOrder.ship)
         
-        let attackComponent = AttackComponent(weapon: Weapon(type: .I))
-        addComponent(attackComponent)
-        
-        self.position = .zero
+        self.physicsBody = SKPhysicsBody(circleOfRadius: self.frame.width/2 - 15)
+        self.physicsBody?.isDynamic = false
+        self.physicsBody?.affectedByGravity = false
+        self.physicsBody?.allowsRotation = false
+        self.physicsBody?.categoryBitMask = PhysicsCategory.ship
+        self.physicsBody?.contactTestBitMask = PhysicsCategory.enemy
+        self.physicsBody?.collisionBitMask = 0
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-    func shoot() {
+    func fire() {
         Log.function()
-        component(ofType: AttackComponent.self)!.weapon.launch()
+        
+        let projectile = self.weapon.projectile
+        
+        let x = -cos(self.zRotation) * 300
+        let y = -sin(self.zRotation) * 300
+        
+        if let scene = self.scene as? GameScene {
+            scene.addChild(projectile)
+            projectile.run(SKAction.move(by: CGVector(dx: x, dy: y), duration: 1.0))
+        }
+    }
+    
+    func rotate(to point: CGPoint) {
+        self.zRotation = atan2(self.position.y - point.y, position.x - point.x)
     }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+    
+    func update(deltaTime: TimeInterval) {
+        
+    }
+    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
     
 }
 

@@ -11,6 +11,9 @@ import SpriteKit
 import ARKit
 
 /* ----------------------------------------------------------------------------------------- */
+// - Creates and holds a reference to the game manager
+// - Holds a reference to and manages the scene view
+// - Initializes and handles the face tracking session
 
 class GameViewController: UIViewController, ARSKViewDelegate {
     
@@ -18,6 +21,21 @@ class GameViewController: UIViewController, ARSKViewDelegate {
 
     @IBOutlet var sceneView: ARSKView!
     var manager: GameManager!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        manager = GameManager(scene: GameScene())
+        
+        sceneView.delegate = self
+        sceneView.ignoresSiblingOrder = true
+        sceneView.presentScene(manager.scene)
+        
+        manager.state = .starting
+
+        showDevTools = true
+        view_devTools.isUserInteractionEnabled = false
+    }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
@@ -75,25 +93,17 @@ class GameViewController: UIViewController, ARSKViewDelegate {
                 view_devTools.isHidden = false
                 sceneView.showsFPS = true
                 sceneView.showsNodeCount = true
+                sceneView.showsPhysics = true
             } else {
-                view_devTools.isHidden = false
+                view_devTools.isHidden = true
                 sceneView.showsFPS = false
                 sceneView.showsNodeCount = false
+                sceneView.showsPhysics = false
             }
         }
     }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        sceneView.delegate = self
-        manager = GameManager(scene: GameScene())
-        sceneView.presentScene(manager.scene)
-        manager.state = .starting
-        showDevTools = true
-    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -191,6 +201,11 @@ class GameViewController: UIViewController, ARSKViewDelegate {
             // update indicator position
             self.view_lookPos.transform = CGAffineTransform(translationX: smoothEyeLookAtPositionX, y: smoothEyeLookAtPositionY)
             self.lbl_distance.text = "\(Int(round(distance * 100))) cm"
+            
+            // - - - - - -
+            
+            // rotate the ship to the lookAtPosition
+            self.manager.scene.ship.rotate(to: CGPoint(x: smoothEyeLookAtPositionX, y: smoothEyeLookAtPositionY))
         }
     }
     

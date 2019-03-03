@@ -9,6 +9,7 @@
 import SpriteKit
 
 /* ----------------------------------------------------------------------------------------- */
+// - A spritekit button that can be placed in a SKScene
 
 class GameButton: SKSpriteNode {
     

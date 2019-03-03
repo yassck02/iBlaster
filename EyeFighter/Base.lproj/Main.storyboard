@@ -18,6 +18,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
+                            <arskView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EO5-fy-WZq">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                            </arskView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="u5i-f4-mB3" userLabel="Dev Tools View">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
@@ -96,28 +99,28 @@
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4GO-IV-fQU">
                                                 <rect key="frame" x="20" y="63.5" width="88" height="1"/>
-                                                <color key="backgroundColor" red="0.78062454380000001" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="backgroundColor" red="1" green="0.43221900740000002" blue="0.67156720479999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="1" id="xdD-yj-pkw"/>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RRf-Vf-lNq">
                                                 <rect key="frame" x="63.5" y="20" width="1" height="88"/>
-                                                <color key="backgroundColor" red="0.78062454380000001" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="backgroundColor" red="1" green="0.43221900740000002" blue="0.67156720479999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="1" id="dax-Vh-2Lv"/>
                                                 </constraints>
                                             </view>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qeN-Gf-8YJ">
                                                 <rect key="frame" x="60" y="60" width="8" height="8"/>
-                                                <color key="backgroundColor" red="0.78062454380000001" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="backgroundColor" red="1" green="0.43221900740000002" blue="0.67156720479999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="8" id="V3R-Dz-NHO"/>
                                                     <constraint firstAttribute="width" secondItem="qeN-Gf-8YJ" secondAttribute="height" id="gIl-4H-46u"/>
                                                 </constraints>
                                             </view>
                                         </subviews>
-                                        <color key="backgroundColor" red="0.7806245437612731" green="1" blue="0.0" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="backgroundColor" red="1" green="0.43221900740000002" blue="0.67156720479999998" alpha="0.25" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstItem="RRf-Vf-lNq" firstAttribute="top" secondItem="Ffx-4g-sPS" secondAttribute="top" constant="20" id="F0x-fp-9ZJ"/>
                                             <constraint firstAttribute="width" constant="128" id="FcV-Ga-gmR"/>
@@ -140,9 +143,6 @@
                                     <constraint firstItem="DQA-ek-wFq" firstAttribute="leading" secondItem="u5i-f4-mB3" secondAttribute="leading" constant="5" id="S64-Dw-MDf"/>
                                 </constraints>
                             </view>
-                            <arskView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EO5-fy-WZq">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                            </arskView>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>

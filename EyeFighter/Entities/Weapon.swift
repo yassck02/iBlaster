@@ -9,50 +9,27 @@
 import GameKit
 
 enum WeaponType {
-    case I
-    case II
-    case III
-    case IV
-    case V
+    case A
+    case B
+    case C
+    case D
+    case E
     
-    static let allValues = [I, II, III, IV, V]
+    static let allValues = [A, B, C, D, E]
 }
 
 /* ----------------------------------------------------------------------------------------- */
 
-class Weapon: GKEntity {
+class Weapon {
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
     var type: WeaponType!
     var level: Int!
     
-    var position: CGPoint {
-        get {
-            return component(ofType: VisualComponent.self)!.node.position
-        }
-        set {
-            component(ofType: VisualComponent.self)!.node.position = newValue
-        }
-    }
-    
-    var rotation: CGFloat {
-        get {
-            return component(ofType: VisualComponent.self)!.node.zRotation
-        }
-        set {
-            component(ofType: VisualComponent.self)!.node.zRotation = newValue
-        }
-    }
-    
-    func rotate(to point: CGPoint) {
-        rotation = atan2(position.y - point.y, position.x - point.x)
-    }
-    
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
     init(type: WeaponType) {
-        super.init()
         self.type = type
         self.level = 0
     }
@@ -63,8 +40,8 @@ class Weapon: GKEntity {
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
-    func launch() {
-        Log.function()
+    var projectile: Projectile {
+        return Projectile(damage: 25, color: SKColor.green)
     }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

@@ -6,31 +6,32 @@
 //  Copyright © 2019 HSY Technologies. All rights reserved.
 //
 
-import GameKit
+import SpriteKit
 
 /* ----------------------------------------------------------------------------------------- */
 
-class Projectile: GKEntity {
+class Projectile: SKSpriteNode {
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
-    var level: Int!
-    
-    var position: CGPoint {
-        get {
-            return component(ofType: VisualComponent.self)!.node.position
-        }
-        set {
-            component(ofType: VisualComponent.self)!.node.position = newValue
-        }
-    }
+    var damage: CGFloat!
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
-    init(level: Int) {
-        super.init()
-        self.level = level
+    init(damage: CGFloat, color: SKColor) {
+        super.init(texture: SKTexture(imageNamed: "projectile"), color: color, size: CGSize(width: 25.0, height: 25.0))
+        self.colorBlendFactor = 1.0
+        
+        self.damage = damage
         self.position = .zero
+        
+        self.physicsBody = SKPhysicsBody(circleOfRadius: self.frame.width/2)
+        self.physicsBody?.isDynamic = true
+        self.physicsBody?.affectedByGravity = false
+        self.physicsBody?.allowsRotation = false
+        self.physicsBody?.categoryBitMask = PhysicsCategory.projectile
+        self.physicsBody?.contactTestBitMask = PhysicsCategory.enemy
+        self.physicsBody?.collisionBitMask = 0
     }
     
     required init?(coder aDecoder: NSCoder) {

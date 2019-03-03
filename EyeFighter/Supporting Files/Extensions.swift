@@ -9,15 +9,21 @@
 import SceneKit
 import SpriteKit
 
+/* ----------------------------------------------------------------------------------------- */
+
 extension SCNVector3 {
     func length() -> Float {
         return sqrtf(x * x + y * y + z * z)
     }
 }
 
+/* ----------------------------------------------------------------------------------------- */
+
 func - (l: SCNVector3, r: SCNVector3) -> SCNVector3 {
     return SCNVector3Make(l.x - r.x, l.y - r.y, l.z - r.z)
 }
+
+/* ----------------------------------------------------------------------------------------- */
 
 extension Collection where Element == CGFloat, Index == Int {
     /// Return the mean of a list of CGFloat. Used with `recentVirtualObjectDistances`.
@@ -34,6 +40,8 @@ extension Collection where Element == CGFloat, Index == Int {
     }
 }
 
+/* ----------------------------------------------------------------------------------------- */
+
 extension SKSpriteNode {
     
     public func tile(image: UIImage, size: CGSize) {
@@ -49,3 +57,17 @@ extension SKSpriteNode {
         }
     }
 }
+
+/* ----------------------------------------------------------------------------------------- */
+
+extension CGPoint {
+    
+    func distance(to point: CGPoint) -> CGFloat {
+        return sqrt(pow(self.x - point.x, 2) +
+                    pow(self.y - point.y, 2))
+    }
+    
+}
+
+/* ----------------------------------------------------------------------------------------- */
+
