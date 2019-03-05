@@ -12,6 +12,7 @@ import SpriteKit
 /* ----------------------------------------------------------------------------------------- */
 
 extension SCNVector3 {
+    
     func length() -> Float {
         return sqrtf(x * x + y * y + z * z)
     }
@@ -26,7 +27,7 @@ func - (l: SCNVector3, r: SCNVector3) -> SCNVector3 {
 /* ----------------------------------------------------------------------------------------- */
 
 extension Collection where Element == CGFloat, Index == Int {
-    /// Return the mean of a list of CGFloat. Used with `recentVirtualObjectDistances`.
+
     var average: CGFloat? {
         guard !isEmpty else {
             return nil
@@ -66,8 +67,30 @@ extension CGPoint {
         return sqrt(pow(self.x - point.x, 2) +
                     pow(self.y - point.y, 2))
     }
-    
 }
 
 /* ----------------------------------------------------------------------------------------- */
 
+extension CGPath {
+    
+    class func randomCircle(points: Int, radius: CGFloat) -> CGPath {
+        
+        let star = CGMutablePath()
+        
+        var x = radius
+        var y = CGFloat(0.0)
+        star.move(to: CGPoint(x: x, y: y))
+    
+        let da = (CGFloat.pi * 2.0) / CGFloat(points)
+        for angle in stride(from: da, to: CGFloat.pi * 1.9, by: da) {
+            x = cos(angle) * radius * CGFloat.random(in: ClosedRange(uncheckedBounds: (lower: 0.25, upper: 1.75)))
+            y = sin(angle) * radius * CGFloat.random(in: ClosedRange(uncheckedBounds: (lower: 0.25, upper: 1.75)))
+            star.addLine(to: CGPoint(x: x, y: y))
+        }
+        star.closeSubpath()
+        
+        return star
+    }
+}
+
+/* ----------------------------------------------------------------------------------------- */

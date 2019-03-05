@@ -1,5 +1,5 @@
 //
-//  Enemy.swift
+//  Asteroid.swift
 //  EyeFighter
 //
 //  Created by Connor yass on 2/20/19.
@@ -10,30 +10,9 @@ import GameKit
 
 /* ----------------------------------------------------------------------------------------- */
 
-enum EnemyType: Int {
-    case A = 0
-    case B = 1
-    case C = 2
-    
-    static let allValues = [A, B, C]
-    
-    func health(for level: Int) -> CGFloat {
-        return CGFloat((rawValue * 100) + 100)
-    }
-    
-    func speed(for level: Int) -> CGFloat {
-        return CGFloat((rawValue * 1) + 1)
-    }
-}
-
-/* ----------------------------------------------------------------------------------------- */
-
-class Enemy: SKSpriteNode {
+class Asteroid: SKShapeNode {
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    
-    static let maxLevel = 6
-    static let maxSpeed = 10
     
     static func rotateAction(speed: CGFloat) -> SKAction {
         return SKAction.repeatForever(
@@ -43,11 +22,19 @@ class Enemy: SKSpriteNode {
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
-    var type: EnemyType!
-    
     var level: Int!
     
-    var damage: CGFloat!
+    var damage: CGFloat! {
+        get {
+            return (CGFloat(level) * 25.0 + 50.0)
+        }
+    }
+    
+    var maxHealth: CGFloat! {
+        get {
+            return (CGFloat(level) * 50.0 + 100.0)
+        }
+    }
     
     var target: SKNode?
     
@@ -63,28 +50,28 @@ class Enemy: SKSpriteNode {
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-    init(type: EnemyType, level: Int) {
-        super.init(texture: SKTexture(imageNamed: "enemy"), color: SKColor.red, size: CGSize(width: 50.0, height: 50.0))
-        self.zPosition = CGFloat(zOrder.enemy)
-        self.xScale = 1.0 + CGFloat(3 * level / Enemy.maxLevel)
-        self.xScale = 1.0 + CGFloat(3 * level / Enemy.maxLevel)
-        self.colorBlendFactor = 1.0
-        self.type = type
+    init(level: Int) {
+        super.init()
+        
+        self.path = CGPath.randomCircle(points: 6, radius: 25.0)
+        self.strokeColor = AppUtility.color
+        self.fillColor = AppUtility.color.withAlphaComponent(0.5)
+        self.lineWidth = 3.0
+        
+        self.zPosition = CGFloat(zOrder.asteroid)
+        
         self.level = level
-        
-        self.health = type.health(for: level)
-        self.speed = type.speed(for: level)
-        self.damage = 10.0
-        
-        self.physicsBody = SKPhysicsBody(circleOfRadius: self.frame.width/2 - 5)
+        self.health = CGFloat(level) * 100.0
+
+        self.physicsBody = SKPhysicsBody(polygonFrom: self.path!)
         self.physicsBody?.isDynamic = true
         self.physicsBody?.affectedByGravity = false
         self.physicsBody?.allowsRotation = false
-        self.physicsBody?.categoryBitMask = PhysicsCategory.enemy
+        self.physicsBody?.categoryBitMask = PhysicsCategory.asteroid
         self.physicsBody?.contactTestBitMask = PhysicsCategory.ship & PhysicsCategory.projectile
         self.physicsBody?.collisionBitMask = 0
         
-        self.run(Enemy.rotateAction(speed: 1.0))
+        self.run(Asteroid.rotateAction(speed: 1.0))
     }
     
     required init?(coder aDecoder: NSCoder) {

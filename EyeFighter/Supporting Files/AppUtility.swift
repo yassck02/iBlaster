@@ -8,11 +8,12 @@
 
 import Foundation
 import UIKit
+import SpriteKit
 
 /* ----------------------------------------------------------------------------------------- */
 
 struct PhysicsCategory {
-    static let enemy      : UInt32 = 0x1 << 0
+    static let asteroid   : UInt32 = 0x1 << 0
     static let ship       : UInt32 = 0x1 << 1
     static let projectile : UInt32 = 0x1 << 2
 }
@@ -20,9 +21,10 @@ struct PhysicsCategory {
 /* ----------------------------------------------------------------------------------------- */
 
 struct zOrder {
-    static let enemy : CGFloat = 0.0
-    static let ship  : CGFloat = 1.0
-    static let menu  : CGFloat = 2.0
+    static let asteroid   : CGFloat = 0.0
+    static let ship       : CGFloat = 1.0
+    static let menu       : CGFloat = 2.0
+    static let projectile : CGFloat = 3.0
 }
 
 /* ----------------------------------------------------------------------------------------- */
@@ -30,6 +32,12 @@ struct zOrder {
 class AppUtility {
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+    
+    static var color: SKColor {
+        get {
+            return SKColor(hue: hue, saturation: 0.75, brightness: 1.0, alpha: 1.0)
+        }
+    }
     
     static private var _hue: CGFloat?
     static var hue: CGFloat {
@@ -42,6 +50,7 @@ class AppUtility {
         set {
             _hue = newValue
             UserDefaults.standard.set(_hue, forKey: "hue")
+            Log.function()
         }
     }
     

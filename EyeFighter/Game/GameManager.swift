@@ -43,25 +43,25 @@ class GameManager {
         didSet {
             switch(state!) {
             case .starting:
-                showStartMenu()
-                hidePauseMenu()
-                hideEndMenu()
-                hidePlayMenu()
+                show(startMenu)
+                hide(pauseMenu)
+                hide(endMenu)
+                hide(playMenu)
                 scene.isPaused = true
                 break
             case .playing:
-                showPlayMenu()
-                hideStartMenu()
-                hidePauseMenu()
-                hideEndMenu()
+                show(playMenu)
+                hide(startMenu)
+                hide(pauseMenu)
+                hide(endMenu)
                 scene.isPaused = false
                 break
             case .paused:
-                showPauseMenu()
+                show(pauseMenu)
                 scene.isPaused = true
                 break
             case .ended:
-                showEndMenu()
+                show(endMenu)
                 scene.isPaused = true
                 break
             }
@@ -69,7 +69,7 @@ class GameManager {
     }
 
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-    // MARK: = Init
+    // MARK: - Init
     
     init(scene: GameScene) {
         Log.function()
@@ -81,6 +81,7 @@ class GameManager {
         createStartMenu()
         createPauseMenu()
         createEndMenu()
+        createSettingsMenu()
     }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -116,21 +117,20 @@ class GameManager {
     
     @objc func resume() {
         Log.function()
-        hidePauseMenu()
+        hide(pauseMenu)
         state = .playing
+    }
+    
+    @objc func settings() {
+        Log.function()
+        hide(pauseMenu)
     }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     // MARK: = init, deinit Game
     
-    var startTime: CFAbsoluteTime!
-    var elapsedTime: CGFloat {
-        return CGFloat(startTime! - CFAbsoluteTimeGetCurrent())
-    }
-    
     func initGame() {
-        startTime = CFAbsoluteTimeGetCurrent()
-        scene.spawnEnemy()
+
     }
     
     func deinitGame() {
@@ -141,40 +141,66 @@ class GameManager {
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     // MARK: - Menu create, hide, show
     
-    private func initMenu() -> SKNode {
-        let menu = SKSpriteNode(texture: nil, color: .clear, size: scene.size)
+    private func createMenu() -> SKNode {
+        let menu = SKSpriteNode(color: .clear, size: scene.size)
         menu.zPosition = CGFloat(zOrder.menu)
         self.scene.addChild(menu)
         return menu
     }
     
+    private func show(_ menu: SKNode) {
+        menu.isHidden = false
+        menu.isPaused = false
+    }
+    
+    private func hide(_ menu: SKNode) {
+        menu.isHidden = true
+        menu.isPaused = true
+    }
+    
+    // - - - - - -
+    
+    private var settingsMenu: SKNode!
+    
+    private func createSettingsMenu() {
+        Log.function()
+        settingsMenu = createMenu()
+        hide(settingsMenu)
+    }
+    
     // - - - - - -
     
     private var lbl_score: SKLabelNode!
+    private var health_bar: SKShapeNode!
     private var playMenu: SKNode!
+    
     
     private func createPlayMenu() {
         Log.function()
-        playMenu = initMenu()
+        playMenu = createMenu()
         
-        let btn_pause = GameButton(texture: nil, color: .purple, size: CGSize(width: 150, height: 50), text: "PAUSE")
-        btn_pause.position = CGPoint(x: scene.size.width/2 - btn_pause.size.width/2 - 10,
-                                     y: scene.size.height/2 - btn_pause.size.height/2 - 10)
+        let btn_pause = GameButton(color: AppUtility.color, size: CGSize(width: 150, height: 50), text: "PAUSE")
+        btn_pause.position = CGPoint(x: scene.size.width/2 - btn_pause.frame.size.width/2 - 10,
+                                     y: scene.size.height/2 - btn_pause.frame.size.height/2 - 10)
         btn_pause.setAction(target: self, triggerEvent: .TouchUpInside, action: #selector(pause))
         playMenu.addChild(btn_pause)
         
-        lbl_score = SKLabelNode(text: "0")
+        lbl_score = SKLabelNode(fontNamed: "Helvetica")
+        lbl_score.text = "0"
+        lbl_score.fontSize = 16.0
         lbl_score.position = CGPoint(x: -scene.size.width/2 + 15,
                                      y: scene.size.height/2 - 20)
         lbl_score.horizontalAlignmentMode = .left
         lbl_score.verticalAlignmentMode = .top
         playMenu.addChild(lbl_score)
         
-        hidePlayMenu()
+        health_bar = HealthBar(size: CGSize(width: 100, height: 25), color: SKColor.white)
+        health_bar.position = CGPoint(x: 0,
+                                      y: scene.size.height/2 - btn_pause.frame.size.height/2 - 10)
+        playMenu.addChild(health_bar)
+        
+        hide(playMenu)
     }
-    
-    private func showPlayMenu() { playMenu.isHidden = false; playMenu.isPaused = false }
-    private func hidePlayMenu() { playMenu.isHidden = true;  playMenu.isPaused = true  }
     
     // - - - - - -
     
@@ -182,18 +208,28 @@ class GameManager {
     
     private func createStartMenu() {
         Log.function()
-        startMenu = initMenu()
+        startMenu = createMenu()
         
-        let btn_play = GameButton(texture: nil, color: .purple, size: CGSize(width: 150, height: 50), text: "PLAY")
+        let btn_play = GameButton(color: AppUtility.color, size: CGSize(width: 150, height: 50), text: "PLAY")
         btn_play.position = CGPoint(x: 0, y: -100)
         btn_play.setAction(target: self, triggerEvent: .TouchUpInside, action: #selector(play))
         startMenu.addChild(btn_play)
         
-        hideStartMenu()
+        let btn_settings = GameButton(color: AppUtility.color, size: CGSize(width: 150, height: 50), text: "SETTINGS")
+        btn_settings.position = CGPoint(x: 0, y: -200)
+        btn_settings.setAction(target: self, triggerEvent: .TouchUpInside, action: #selector(settings))
+        startMenu.addChild(btn_settings)
+        
+        let lbl_title = SKLabelNode(fontNamed: "Helvetica")
+        lbl_title.text = "Eye Fighter"
+        lbl_title.fontSize = 28.0
+        lbl_title.position = CGPoint(x: 0, y: 100)
+        lbl_title.horizontalAlignmentMode = .center
+        lbl_title.verticalAlignmentMode = .center
+        startMenu.addChild(lbl_title)
+        
+        hide(startMenu)
     }
-    
-    private func showStartMenu() { startMenu.isHidden = false; startMenu.isPaused = false }
-    private func hideStartMenu() { startMenu.isHidden = true;  startMenu.isPaused = true  }
     
     // - - - - - -
     
@@ -201,26 +237,23 @@ class GameManager {
     
     private func createPauseMenu() {
         Log.function()
-        pauseMenu = initMenu()
+        pauseMenu = createMenu()
         
-        let btn_resume = GameButton(texture: nil, color: .purple, size: CGSize(width: 150, height: 50), text: "RESUME")
-        btn_resume.position = CGPoint(x: scene.size.width/2 - btn_resume.size.width/2 - 10,
-                                      y: scene.size.height/2 - btn_resume.size.height/2 - 10)
+        let btn_resume = GameButton(color: AppUtility.color, size: CGSize(width: 150, height: 50), text: "RESUME")
+        btn_resume.position = CGPoint(x: scene.size.width/2 - btn_resume.frame.size.width/2 - 10,
+                                      y: scene.size.height/2 - btn_resume.frame.size.height/2 - 10)
         btn_resume.setAction(target: self, triggerEvent: .TouchUpInside, action: #selector(resume))
         btn_resume.zPosition = 5
         pauseMenu.addChild(btn_resume)
         
-        let btn_quit = GameButton(texture: nil, color: .purple, size: CGSize(width: 150, height: 50), text: "QUIT")
-        btn_quit.position = CGPoint(x: scene.size.width/2 - btn_quit.size.width/2 - 10,
-                                    y: scene.size.height/2 - btn_quit.size.height/2 - 100)
+        let btn_quit = GameButton(color: AppUtility.color, size: CGSize(width: 150, height: 50), text: "QUIT")
+        btn_quit.position = CGPoint(x: scene.size.width/2 - btn_quit.frame.size.width/2 - 10,
+                                    y: scene.size.height/2 - btn_quit.frame.size.height/2 - 100)
         btn_quit.setAction(target: self, triggerEvent: .TouchUpInside, action: #selector(quit))
         pauseMenu.addChild(btn_quit)
         
-        hidePauseMenu()
+        hide(pauseMenu)
     }
-    
-    private func showPauseMenu() { pauseMenu.isHidden = false; pauseMenu.isPaused = false }
-    private func hidePauseMenu() { pauseMenu.isHidden = true;  pauseMenu.isPaused = true  }
     
     // - - - - - -
     
@@ -228,23 +261,28 @@ class GameManager {
     
     private func createEndMenu() {
         Log.function()
-        endMenu = initMenu()
+        endMenu = createMenu()
         
-        let btn_restart = GameButton(texture: nil, color: .purple, size: CGSize(width: 150, height: 50), text: "RESTART")
+        let btn_restart = GameButton(color: AppUtility.color, size: CGSize(width: 150, height: 50), text: "RESTART")
         btn_restart.position = CGPoint(x: 0, y: 100)
         btn_restart.setAction(target: self, triggerEvent: .TouchUpInside, action: #selector(restart))
         endMenu.addChild(btn_restart)
         
-        let btn_quit = GameButton(texture: nil, color: .purple, size: CGSize(width: 150, height: 50), text: "QUIT")
+        let btn_quit = GameButton(color: AppUtility.color, size: CGSize(width: 150, height: 50), text: "QUIT")
         btn_quit.position = CGPoint(x: 0, y: -100)
         btn_quit.setAction(target: self, triggerEvent: .TouchUpInside, action: #selector(quit))
         endMenu.addChild(btn_quit)
         
-        hideEndMenu()
+        let lbl_ended = SKLabelNode(fontNamed: "Helvetica")
+        lbl_ended.text = "Game Over"
+        lbl_ended.fontSize = 22.0
+        lbl_ended.position = CGPoint(x: 0, y: 200)
+        lbl_ended.horizontalAlignmentMode = .center
+        lbl_ended.verticalAlignmentMode = .center
+        endMenu.addChild(lbl_ended)
+        
+        hide(endMenu)
     }
-    
-    private func showEndMenu() { endMenu.isHidden = false; endMenu.isPaused = false }
-    private func hideEndMenu() { endMenu.isHidden = true;  endMenu.isPaused = true  }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 

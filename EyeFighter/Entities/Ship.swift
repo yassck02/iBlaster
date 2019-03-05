@@ -14,7 +14,7 @@ class Ship: SKSpriteNode {
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
-    var weapon = Weapon(type: .A)
+    static let maxHealth = 100.0
     
     var health: CGFloat = 100.0 {
         didSet {
@@ -41,7 +41,7 @@ class Ship: SKSpriteNode {
         self.physicsBody?.affectedByGravity = false
         self.physicsBody?.allowsRotation = false
         self.physicsBody?.categoryBitMask = PhysicsCategory.ship
-        self.physicsBody?.contactTestBitMask = PhysicsCategory.enemy
+        self.physicsBody?.contactTestBitMask = PhysicsCategory.asteroid
         self.physicsBody?.collisionBitMask = 0
     }
     
@@ -53,14 +53,19 @@ class Ship: SKSpriteNode {
     func fire() {
         Log.function()
         
-        let projectile = self.weapon.projectile
+        let projectile = Projectile(damage: 25.0, color: .green)
         
-        let x = -cos(self.zRotation) * 300
-        let y = -sin(self.zRotation) * 300
+        let x = -cos(self.zRotation) * 400
+        let y = -sin(self.zRotation) * 400
         
         if let scene = self.scene as? GameScene {
             scene.addChild(projectile)
-            projectile.run(SKAction.move(by: CGVector(dx: x, dy: y), duration: 1.0))
+            projectile.run(
+                SKAction.sequence([
+                    SKAction.move(by: CGVector(dx: x, dy: y), duration: 1.0),
+                    SKAction.removeFromParent()
+                ])
+            )
         }
     }
     

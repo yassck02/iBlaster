@@ -20,6 +20,7 @@ class Projectile: SKSpriteNode {
     
     init(damage: CGFloat, color: SKColor) {
         super.init(texture: SKTexture(imageNamed: "projectile"), color: color, size: CGSize(width: 25.0, height: 25.0))
+        self.zPosition = CGFloat(zOrder.projectile)
         self.colorBlendFactor = 1.0
         
         self.damage = damage
@@ -30,7 +31,7 @@ class Projectile: SKSpriteNode {
         self.physicsBody?.affectedByGravity = false
         self.physicsBody?.allowsRotation = false
         self.physicsBody?.categoryBitMask = PhysicsCategory.projectile
-        self.physicsBody?.contactTestBitMask = PhysicsCategory.enemy
+        self.physicsBody?.contactTestBitMask = PhysicsCategory.asteroid
         self.physicsBody?.collisionBitMask = 0
     }
     

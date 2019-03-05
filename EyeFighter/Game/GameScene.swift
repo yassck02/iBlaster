@@ -24,7 +24,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     // MARK: -
     
     var ship: Ship!
-    var enemies = [Enemy]()
+    var enemies = [Asteroid]()
     
     var grid: SKSpriteNode!
     
@@ -34,6 +34,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override init() {
         super.init(size: UIScreen.main.bounds.size)
         self.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        self.backgroundColor = UIColor(hue: 0.5, saturation: 0.6, brightness: 0.1, alpha: 1.0)
         
         self.physicsWorld.gravity = .zero
         self.physicsWorld.contactDelegate = self
@@ -50,28 +51,38 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         self.ship = Ship()
         ship.position = CGPoint.zero
         self.addChild(ship)
+        
+        // Add the stars
+        if let stars = SKEmitterNode(fileNamed: "Stars.sks") {
+            stars.position = CGPoint.zero
+            stars.zPosition = 0.1
+            stars.particlePositionRange = CGVector(dx: self.frame.width, dy: self.frame.height)
+            stars.advanceSimulationTime(10)
+            self.addChild(stars)
+        } else {
+            Log.error("could not load star particls file")
+        }
     }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
     func cleanUp() {
-        
         for child in children {
-            if let _ = child as? Enemy {
-                child.removeFromParent()
-            } else if let _ = child as? Projectile {
-                child.removeFromParent()
+            if let asteroid = child as? Asteroid {
+                for (i, e) in enemies.enumerated() {
+                    if (asteroid == e) { enemies.remove(at: i) }
+                }
+                asteroid.removeFromParent()
+            } else if let projectile = child as? Projectile {
+                projectile.removeFromParent()
             }
         }
-        
-        enemies.removeAll()
-        
         ship.health = 100.0
     }
 
-    func spawnEnemy() {
-        let enemy = Enemy(type: .A, level: 0)
-        enemy.target = ship
+    func spawnasteroid() {
+        let asteroid = Asteroid(level: 1)
+        asteroid.target = ship
         
         let x = (CGFloat(drand48()) * self.frame.width) - (self.frame.width / 2)
         let y = (CGFloat(drand48()) * self.frame.height) - (self.frame.height / 2)
@@ -79,40 +90,42 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let tmp = Int.random(in: 0...3)
         switch(tmp){
         case 0:
-            enemy.position = CGPoint(x: x, y: self.frame.height/2 + 25)
+            asteroid.position = CGPoint(x: x, y: self.frame.height/2 + 25)
             break
         case 1:
-            enemy.position = CGPoint(x: x, y: -self.frame.height/2 - 25)
+            asteroid.position = CGPoint(x: x, y: -self.frame.height/2 - 25)
             break
         case 2:
-            enemy.position = CGPoint(x: self.frame.width/2 + 25, y: y)
+            asteroid.position = CGPoint(x: self.frame.width/2 + 25, y: y)
             break
         case 3:
-            enemy.position = CGPoint(x: -self.frame.width/2 - 25, y: y)
+            asteroid.position = CGPoint(x: -self.frame.width/2 - 25, y: y)
             break
         default:
-            Log.error("Could not spawn enemy in valid location")
+            Log.error("Could not spawn asteroid in valid location")
         }
         
-        Log.info(enemy.position)
-        enemies.append(enemy)
-        self.addChild(enemy)
+        Log.info(asteroid.position)
+        enemies.append(asteroid)
+        self.addChild(asteroid)
     }
     
-    func remove(_ enemy: Enemy) {
-        for (i, e) in enemies.enumerated() {
-            if (enemy == e) {
-                enemies.remove(at: i)
+    func remove(_ node: SKNode) {
+        if let asteroid = node as? Asteroid {
+            for (i, e) in enemies.enumerated() {
+                if (asteroid == e) {
+                    enemies.remove(at: i)
+                }
             }
         }
-        enemy.removeFromParent()
+        node.removeFromParent()
     }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     // Mark: - Touches
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if isPaused != true {
+        if (isPaused == false) {
             if(touches.count > 1) {
                 if let point = touches.first?.location(in: self) {
                     ship.rotate(to: point)
@@ -124,7 +137,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if isPaused != true {
+        if (isPaused == false) {
             if(touches.count > 1) {
                 if let point = touches.first?.location(in: self) {
                     ship.rotate(to: point)
@@ -136,28 +149,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     // MARK: - Update
     
+    var elapsedTime = 0.0
     var previousTime: TimeInterval = 0.0
     var dt: TimeInterval = 0.0
     
-    var elapsedTime = 0.0
-    
     override func update(_ currentTime: TimeInterval) {
         
-        // spawn an enemy
-        dt = currentTime - previousTime
-        elapsedTime += dt
-        if(elapsedTime >= 2) {
-            spawnEnemy()
-            elapsedTime = 0.0
-        }
-        previousTime = currentTime
-        
-        // update the enemies on the screen
-        for enemy in enemies {
-            enemy.update(deltaTime: dt)
-        }
-        ship.update(deltaTime: dt)
-        previousTime = currentTime
+            // spawn an asteroid
+            dt = currentTime - previousTime
+            elapsedTime += dt
+            if(elapsedTime >= 2) {
+                spawnasteroid()
+                elapsedTime = 0.0
+            }
+            previousTime = currentTime
+            
+            // update the enemies on the screen
+            for asteroid in enemies {
+                asteroid.update(deltaTime: dt)
+            }
+            ship.update(deltaTime: dt)
+            previousTime = currentTime
     }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -175,17 +187,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             secondBody = contact.bodyA
         }
         
-        if(firstBody.categoryBitMask & PhysicsCategory.enemy != 0) {
-            if let enemy = firstBody.node as? Enemy {
+        if(firstBody.categoryBitMask & PhysicsCategory.asteroid != 0) {
+            if let asteroid = firstBody.node as? Asteroid {
                 if (secondBody.categoryBitMask & PhysicsCategory.ship != 0) {
-                    ship.health -= enemy.damage
-                    self.remove(enemy)
+                    ship.health -= asteroid.damage
+                    self.remove(asteroid)
                 } else if (secondBody.categoryBitMask & PhysicsCategory.projectile != 0) {
                     let projectile = secondBody.node as! Projectile
-                    enemy.health -= projectile.damage
-                    if(enemy.health <= 0) {
-                        manager.score += enemy.health
-                        self.remove(enemy)
+                    asteroid.health -= projectile.damage
+                    if(asteroid.health <= 0) {
+                        manager.score += asteroid.damage
+                        self.remove(asteroid)
                     }
                     projectile.removeFromParent()
                 }

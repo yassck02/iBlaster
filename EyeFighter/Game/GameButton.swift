@@ -11,7 +11,9 @@ import SpriteKit
 /* ----------------------------------------------------------------------------------------- */
 // - A spritekit button that can be placed in a SKScene
 
-class GameButton: SKSpriteNode {
+class GameButton: SKShapeNode {
+    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
     enum GameButtonActionType: Int {
         case TouchUpInside, TouchDown, TouchUp
@@ -19,32 +21,56 @@ class GameButton: SKSpriteNode {
     
     var isEnabled: Bool = true {
         didSet {
-            color = isEnabled ? color.withAlphaComponent(0.5) : color.withAlphaComponent(1.0)
+            fillColor = isEnabled ? color : SKColor.white
+            strokeColor = isEnabled ? SKColor.white : color
+            label.color = isEnabled ? .darkGray : .white
         }
     }
     
     var isSelected: Bool = false {
         didSet {
-            color = isSelected ? color.withAlphaComponent(0.85) : color.withAlphaComponent(1.0)
+            fillColor = isSelected ? SKColor.white : color
+            strokeColor = isSelected ? color : SKColor.white
+            label.color = isSelected ? color : .white
         }
     }
     
-    var label: SKLabelNode!
+    private var _color: SKColor!
+    private var color: SKColor! {
+        get {
+            return _color
+        }
+        set {
+            self.fillColor = newValue
+            _color = newValue
+        }
+    }
+    
+    private var label: SKLabelNode!
     
     required init(coder: NSCoder) {
         fatalError("NSCoding not supported")
     }    
     
-    init(texture: SKTexture?, color: UIColor, size: CGSize, text: String?) {
-        super.init(texture: texture, color: color, size: size)
+    init(color: UIColor, size: CGSize, text: String?) {
+        super.init()
+        self.path = CGPath.init(roundedRect: CGRect(origin: CGPoint(x: -size.width/2, y: -size.height/2), size: size),
+                                cornerWidth: size.height/2, cornerHeight: size.height/2, transform: nil)
+        self.lineWidth = 3.0
+        self.color = color
         
-        label = SKLabelNode(text: text)
+        label = SKLabelNode(fontNamed: "Helvetica")
+        label.fontSize = 16.0
+        label.text = text
         label.verticalAlignmentMode = SKLabelVerticalAlignmentMode.center
         label.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.center
+        label.colorBlendFactor = 1.0
         addChild(label)
 
         isUserInteractionEnabled = true
     }
+    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
     func setAction(target: AnyObject, triggerEvent event: GameButtonActionType, action:Selector) {
         switch (event) {
@@ -60,13 +86,15 @@ class GameButton: SKSpriteNode {
         }
     }
     
-    var actionTouchUpInside: Selector?
-    var actionTouchUp: Selector?
-    var actionTouchDown: Selector?
+    private var actionTouchUpInside: Selector?
+    private var actionTouchUp: Selector?
+    private var actionTouchDown: Selector?
     
-    weak var targetTouchUpInside: AnyObject?
-    weak var targetTouchUp: AnyObject?
-    weak var targetTouchDown: AnyObject?
+    private weak var targetTouchUpInside: AnyObject?
+    private weak var targetTouchUp: AnyObject?
+    private weak var targetTouchDown: AnyObject?
+    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         if (!isEnabled) { return }
@@ -106,6 +134,8 @@ class GameButton: SKSpriteNode {
             UIApplication.shared.sendAction(actionTouchUp!, to: targetTouchUp, from: self, for: nil)
         }
     }
+    
+    /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
 }
 

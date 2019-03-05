@@ -17,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        AppUtility.hue = 0.97
         return true
     }
 
@@ -45,26 +46,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     //MARK: - 3D Touch Shortcuts
     
-    enum ShortcutType: String {
-        case secretSettings = "secretSettings"
-    }
+//    enum ShortcutType: String {
+//        case secretSettings = "secretSettings"
+//    }
     
-    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
-        completionHandler(handleShortcutItem(withShortcutItem: shortcutItem))
-    }
+//    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+//        completionHandler(handleShortcutItem(withShortcutItem: shortcutItem))
+//    }
     
-    func handleShortcutItem(withShortcutItem item: UIApplicationShortcutItem) -> Bool {
-        guard let shortcutType = item.type.components(separatedBy: ".").last else { return false }
-        
-        if let type = ShortcutType(rawValue: shortcutType) {
-            switch type {
-            case .secretSettings:
-                Log.info("Secret Settings event handled")
-                return true
-            }
-        }
-        return false
-    }
+//    func handleShortcutItem(withShortcutItem item: UIApplicationShortcutItem) -> Bool {
+//        guard let shortcutType = item.type.components(separatedBy: ".").last else { return false }
+//
+//        if let type = ShortcutType(rawValue: shortcutType) {
+//            switch type {
+//            case .secretSettings:
+//                Log.info("Secret Settings event handled")
+//                let secretSettingsView = UIStoryboard.init(name: "Main", bundle: Bundle.main).instantiateViewController(withIdentifier: "SecretSettings")
+//                window!.rootViewController = secretSettingsView
+//                window!.makeKeyAndVisible()
+//                return true
+//            }
+//        }
+//        return false
+//    }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 

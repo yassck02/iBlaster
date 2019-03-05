@@ -33,7 +33,7 @@ class GameViewController: UIViewController, ARSKViewDelegate {
         
         manager.state = .starting
 
-        showDevTools = true
+        showDevTools = false
         view_devTools.isUserInteractionEnabled = false
     }
     
@@ -105,14 +105,18 @@ class GameViewController: UIViewController, ARSKViewDelegate {
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         if ARFaceTrackingConfiguration.isSupported {
             let configuration = ARFaceTrackingConfiguration()
             configuration.isLightEstimationEnabled = false
             sceneView.session.run(configuration)
         } else {
+//            let alert = UIAlertController(title: "Uh oh...", message: "It looks like your iOS device doesent support face ID", preferredStyle: .alert)
+//            alert.addAction(UIAlertAction(title: "Alright", style: .default, handler: nil))
+//            alert.addAction(UIAlertAction(title: "Don't warn me again", style: .default, handler: nil))
+//            self.present(alert, animated: true, completion: nil)
             Log.error("Face tracking not supported :(")
         }
     }
