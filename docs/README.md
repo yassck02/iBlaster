@@ -7,6 +7,7 @@ A.K.A EyeBlaster: A simple asteroid game for iOS devices - with eye tracking.
 |                                    |                                    |                                    |
 |    -------------------------:      |     -------------------------:     |     -------------------------:     |
 | ![img00001](../imgs/img00001.png)  |  ![img0002](../imgs/img00002.png)  |  ![img00003](../imgs/img00003.png) |
+|                                    |                                    |                                    |
 
 ## Contributors
 - Connor Yass: yassck02@gmail.com
