@@ -14,12 +14,12 @@ If you think this might look exactly like every other asteroid shooter out there
 Some screen recordings of the game in action can be found [here](../movs).
 
 ## Build and Run
-Download/clone the repo to your computer and open the Xcode project found in the src/ folder. Build and run by pressing the play button in the top toolbar. If you want to run it on your actual iPhone (as opposed to a simulator on the computer), plug the device into the computer and select if from the drop down menu in the top left before clicking the play button.
+Download/clone the repo to your computer and open the Xcode project found in the src/ folder. Build and run by pressing the play button in the top toolbar. If you want to run it on your actual iPhone (as opposed to a simulator on the computer), plug the device into the computer and select it from the drop down menu in the top left before clicking the play button.
 
 ## Contributors
 - Connor Yass: yassck02@gmail.com
 
-## Tools, frameworks, technologies
+## Tools, Frameworks, Technologies
 - Eye tracking: [ARKit](https://developer.apple.com/arkit/)
 - UI Framework: [UIKit](https://developer.apple.com/documentation/uikit)
 - IDE, testing: [Xcode](https://developer.apple.com/xcode/)
