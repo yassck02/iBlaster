@@ -15,4 +15,3 @@ A.K.A EyeBlaster: A simple asteroid game for iOS devices - with eye tracking.
 - ![ARKit](https://developer.apple.com/arkit/)
 - ![UIKit](https://developer.apple.com/documentation/uikit)
 - ![Xcode](https://developer.apple.com/xcode/)
-- https://www.cygwin.com
