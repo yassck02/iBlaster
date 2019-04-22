@@ -205,6 +205,34 @@ extension SKShapeNode {
     }
 }
 
+
+extension SKSpriteNode {
+    
+    func addShadow(color: UIColor, alpha: CGFloat, radius: CGFloat) {
+        
+        var shadow: SKShapeNode?
+        
+        if let texture = self.texture {
+            shadow?.fillTexture = texture
+        }
+        
+        if shadow != nil {
+            
+            shadow!.blendMode = .alpha
+            shadow!.strokeColor = color
+            shadow!.alpha = alpha
+            shadow!.zPosition = -1
+            
+            let blur = SKEffectNode()
+            blur.addChild(shadow!)
+            blur.filter = CIFilter(name: "CIGaussianBlur", parameters: ["inputRadius": radius])
+            blur.shouldRasterize = true
+            
+            self.addChild(blur)
+        }
+    }
+}
+
 /* ----------------------------------------------------------------------------------------- */
 
 extension SKLabelNode {

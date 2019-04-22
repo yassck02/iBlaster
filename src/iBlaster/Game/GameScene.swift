@@ -116,7 +116,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var previousTime: TimeInterval = 0.0
     var dt: TimeInterval = 0.0
     
-    var spawnRate: Double = 1.0    // Spawn 1 asteroid every 'spawnRate' seconds
+    var spawnRate: Double = 2.0    // Spawn 1 asteroid every 'spawnRate' seconds
     
     override func update(_ currentTime: TimeInterval) {
         

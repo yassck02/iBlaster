@@ -247,8 +247,8 @@ class GameManager {
         btn_pause = GameButton(color: .white, size: CGSize(width: 30, height: 30), text: nil)
         btn_pause.fillTexture = SKTexture(imageNamed: "btn_pause")
         btn_pause.lineWidth = 0.0
-        btn_pause.position = CGPoint(x: scene.size.width/2 - btn_pause.frame.size.width/2 - 10,
-                                     y: scene.size.height/2 - btn_pause.frame.size.height/2 - 10)
+        btn_pause.position = CGPoint(x: scene.size.width/2 - btn_pause.frame.size.width/2 - 15,
+                                     y: scene.size.height/2 - btn_pause.frame.size.height/2 - 15)
         btn_pause.setAction(target: self, triggerEvent: .TouchUpInside, action: #selector(pause))
         playMenu.addChild(btn_pause)
         
@@ -280,8 +280,8 @@ class GameManager {
         let btn_settings = GameButton(color: .white, size: CGSize(width: 25, height: 25), text: "")
         btn_settings.lineWidth = 0.0
         btn_settings.fillTexture = SKTexture(imageNamed: "btn_settings")
-        btn_settings.position = CGPoint(x: scene.size.width/2 - btn_settings.frame.size.width/2 - 10,
-                                        y: scene.size.height/2 + btn_settings.frame.size.height/2 - btn_settings.frame.size.height - 10)
+        btn_settings.position = CGPoint(x: scene.size.width/2 - btn_settings.frame.size.width/2 - 15,
+                                        y: scene.size.height/2 + btn_settings.frame.size.height/2 - btn_settings.frame.size.height - 15)
         btn_settings.setAction(target: self, triggerEvent: .TouchUpInside, action: #selector(settings))
         startMenu.addChild(btn_settings)
         
