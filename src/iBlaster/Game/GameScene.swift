@@ -102,7 +102,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var touchMoved = false
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        if (isPaused == false) {
+        if (shouldUpdate == true) {
             if(touches.count == 1) {
                 ship.fire()
             }
@@ -116,33 +116,42 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var previousTime: TimeInterval = 0.0
     var dt: TimeInterval = 0.0
     
-    var spawnRate: Double = 2.0    // Spawn 1 asteroid every 'spawnRate' seconds
+    var spawnRate: Double = 1.5    // Spawn 1 asteroid every 'spawnRate' seconds
+    
+    var shouldUpdate: Bool = false {
+        didSet {
+            Log.function()
+        }
+    }
     
     override func update(_ currentTime: TimeInterval) {
         
-        // spawn an asteroid
-        dt = currentTime - previousTime
-        elapsedTime += dt
-        if(elapsedTime >= spawnRate) {
-            spawnasteroid()
-            elapsedTime = 0.0
+        if (shouldUpdate) {
             
-            spawnRate -= 0.0001
-            if (spawnRate <= 0.01) {
-                spawnRate = 0.01
+            // spawn an asteroid
+            dt = currentTime - previousTime
+            elapsedTime += dt
+            if(elapsedTime >= spawnRate) {
+                spawnasteroid()
+                elapsedTime = 0.0
+                
+                spawnRate -= 0.01
+                if (spawnRate <= 0.01) {
+                    spawnRate = 0.01
+                }
             }
-        }
-    
-        // update the enemies on the screen
-        for asteroid in asteroids {
-            asteroid.update(deltaTime: dt)
-        }
         
-        // Update the ship
-        ship.update(deltaTime: dt)
-        ship.rotate(to: manager.viewController.point)
-    
-        previousTime = currentTime
+            // update the enemies on the screen
+            for asteroid in asteroids {
+                asteroid.update(deltaTime: dt)
+            }
+            
+            // Update the ship
+            ship.update(deltaTime: dt)
+            ship.rotate(to: manager.viewController.point)
+        
+            previousTime = currentTime
+        }
     }
     
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -166,13 +175,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     manager.lives -= 1
                     self.remove(asteroid)
                 } else if (secondBody.categoryBitMask & PhysicsCategory.projectile != 0) {
-                    let projectile = secondBody.node as! Projectile
-                    asteroid.health -= projectile.damage
-                    if(asteroid.health <= 0) {
-                        manager.score += 1
-                        self.remove(asteroid)
+                    if let projectile = secondBody.node as? Projectile {
+                        asteroid.health -= projectile.damage
+                        if(asteroid.health <= 0) {
+                            manager.score += 1
+                            self.remove(asteroid)
+                        }
+                        projectile.removeFromParent()
                     }
-                    projectile.removeFromParent()
                 }
             }
         }

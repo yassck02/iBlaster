@@ -84,11 +84,13 @@ class ViewController: UIViewController, ARSKViewDelegate {
         showDevTools = false
         view_devTools.isUserInteractionEnabled = false
         
-        if ARFaceTrackingConfiguration.isSupported {
-            inputMethod = .eyeTracking
-        } else {
-            inputMethod = .gyro
-        }
+//        if ARFaceTrackingConfiguration.isSupported {
+//            inputMethod = .eyeTracking
+//        } else {
+//            inputMethod = .gyro
+//        }
+        
+        inputMethod = .gyro
         
         startTrackingInput()
     }

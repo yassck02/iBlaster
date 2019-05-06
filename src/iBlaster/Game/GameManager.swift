@@ -54,7 +54,7 @@ class GameManager {
                 scene.ship.removeAllActions()
                 scene.ship.alpha = 1.0
                 
-                scene.isPaused = true
+                scene.shouldUpdate = false
                 viewController.stopTrackingInput()
                 break
                 
@@ -67,7 +67,7 @@ class GameManager {
                 btn_resume.isHidden = true
                 btn_pause.isHidden = false
                 
-                scene.isPaused = false
+                scene.shouldUpdate = true
                 viewController.startTrackingInput()
                 break
                 
@@ -77,7 +77,7 @@ class GameManager {
                 btn_resume.isHidden = false
                 btn_pause.isHidden = true
                 
-                scene.isPaused = true
+                scene.shouldUpdate = false
                 viewController.stopTrackingInput()
                 break
                 
@@ -91,7 +91,7 @@ class GameManager {
                     lbl_highScore.isHidden = true
                 }
                 
-                scene.isPaused = true
+                scene.shouldUpdate = false
                 viewController.stopTrackingInput()
                 break
             }
@@ -277,13 +277,13 @@ class GameManager {
         btn_play.setAction(target: self, triggerEvent: .TouchUpInside, action: #selector(play))
         startMenu.addChild(btn_play)
         
-        let btn_settings = GameButton(color: .white, size: CGSize(width: 25, height: 25), text: "")
-        btn_settings.lineWidth = 0.0
-        btn_settings.fillTexture = SKTexture(imageNamed: "btn_settings")
-        btn_settings.position = CGPoint(x: scene.size.width/2 - btn_settings.frame.size.width/2 - 15,
-                                        y: scene.size.height/2 + btn_settings.frame.size.height/2 - btn_settings.frame.size.height - 15)
-        btn_settings.setAction(target: self, triggerEvent: .TouchUpInside, action: #selector(settings))
-        startMenu.addChild(btn_settings)
+//        let btn_settings = GameButton(color: .white, size: CGSize(width: 25, height: 25), text: "")
+//        btn_settings.lineWidth = 0.0
+//        btn_settings.fillTexture = SKTexture(imageNamed: "btn_settings")
+//        btn_settings.position = CGPoint(x: scene.size.width/2 - btn_settings.frame.size.width/2 - 15,
+//                                        y: scene.size.height/2 + btn_settings.frame.size.height/2 - btn_settings.frame.size.height - 15)
+//        btn_settings.setAction(target: self, triggerEvent: .TouchUpInside, action: #selector(settings))
+//        startMenu.addChild(btn_settings)
         
         let lbl_title = SKLabelNode(fontNamed: AppUtility.font)
         lbl_title.text = "iBlaster"
@@ -310,8 +310,8 @@ class GameManager {
         btn_resume = GameButton(color: .white, size: CGSize(width: 30, height: 30), text: nil)
         btn_resume.fillTexture = SKTexture(imageNamed: "btn_play")
         btn_resume.lineWidth = 0.0
-        btn_resume.position = CGPoint(x: scene.size.width/2 - btn_resume.frame.size.width/2 - 10,
-                                      y: scene.size.height/2 - btn_resume.frame.size.height/2 - 10)
+        btn_resume.position = CGPoint(x: scene.size.width/2 - btn_resume.frame.size.width/2 - 15,
+                                      y: scene.size.height/2 - btn_resume.frame.size.height/2 - 15)
         btn_resume.setAction(target: self, triggerEvent: .TouchUpInside, action: #selector(resume))
         btn_resume.zPosition = 5
         pauseMenu.addChild(btn_resume)

@@ -43,9 +43,7 @@ class Ship: SKSpriteNode {
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
     func fire() {
-        Log.function()
-        
-        let projectile = Projectile(damage: 50.0, color: .green)
+        let projectile = Projectile(damage: 35.0, color: .green)
         
         let x = -cos(self.zRotation - CGFloat.pi/2.0) * 400
         let y = -sin(self.zRotation - CGFloat.pi/2.0) * 400

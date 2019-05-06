@@ -80,7 +80,7 @@ class Asteroid: SKShapeNode {
         self.level = level
         self.health = CGFloat(level) * 100.0
 
-        self.physicsBody = SKPhysicsBody(polygonFrom: self.path!)
+        self.physicsBody = SKPhysicsBody(circleOfRadius: 25.0)
         self.physicsBody?.isDynamic = true
         self.physicsBody?.affectedByGravity = false
         self.physicsBody?.allowsRotation = false
